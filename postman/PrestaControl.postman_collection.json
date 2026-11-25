@@ -1,0 +1,132 @@
+﻿{
+  "info": {
+    "name": "PrestaControl API - Render",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://prestamoservice-api.onrender.com" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. Auth - Registrar prestamista",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "if (jsonData.token) { pm.collectionVariables.set('token', jsonData.token); }"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Juan Prestamista\",\n  \"email\": \"juan@prestacontrol.com\",\n  \"password\": \"Password123\"\n}"
+        },
+        "url": "{{baseUrl}}/auth/register"
+      }
+    },
+    {
+      "name": "2. Auth - Iniciar sesion",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "if (jsonData.token) { pm.collectionVariables.set('token', jsonData.token); }"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"admin@prestacontrol.com\",\n  \"password\": \"Password123\"\n}"
+        },
+        "url": "{{baseUrl}}/auth/login"
+      }
+    },
+    {
+      "name": "3. Prestamos - Prueba 401 Sin Token",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/prestamos"
+      }
+    },
+    {
+      "name": "4. Prestamos - Listar cartera",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+        },
+        "method": "GET",
+        "url": "{{baseUrl}}/prestamos"
+      }
+    },
+    {
+      "name": "5. Prestamos - Registrar prestamo",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+        },
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cliente\": \"Carlos Mendoza\",\n  \"dni\": \"87654321\",\n  \"monto\": 2000.00,\n  \"interes\": 15.00,\n  \"fechaVencimiento\": \"2026-12-20\",\n  \"pagado\": false\n}"
+        },
+        "url": "{{baseUrl}}/prestamos"
+      }
+    },
+    {
+      "name": "6. Prestamos - Obtener por ID",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+        },
+        "method": "GET",
+        "url": "{{baseUrl}}/prestamos/1"
+      }
+    },
+    {
+      "name": "7. Prestamos - Actualizar / Marcar pagado",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+        },
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cliente\": \"Juan Perez\",\n  \"dni\": \"12345678\",\n  \"monto\": 1500.00,\n  \"interes\": 10.50,\n  \"fechaVencimiento\": \"2026-12-31\",\n  \"pagado\": true\n}"
+        },
+        "url": "{{baseUrl}}/prestamos/1"
+      }
+    },
+    {
+      "name": "8. Prestamos - Eliminar prestamo",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+        },
+        "method": "DELETE",
+        "url": "{{baseUrl}}/prestamos/1"
+      }
+    }
+  ]
+}
